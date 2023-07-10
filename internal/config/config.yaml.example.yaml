@@ -1,5 +1,6 @@
 runtime:
-  env: "dev" # dev | prod
+  env: 'dev' # dev | prod
+logger:
   logBody: false
 site:
-  url: "https://google.com"
+  url: 'https://google.com'

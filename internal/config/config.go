@@ -1,8 +1,6 @@
 package config
 
 import (
-	"flag"
-	"log"
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -11,6 +9,7 @@ import (
 type Config struct {
 	SiteConfig    SiteConfig    `yaml:"site"`
 	RuntimeConfig RuntimeConfig `yaml:"runtime"`
+	LoggerConfig  LoggerConfig  `yaml:"logger"`
 }
 
 type SiteConfig struct {
@@ -18,24 +17,29 @@ type SiteConfig struct {
 }
 
 type RuntimeConfig struct {
-	Env     string `yaml:"env"`
-	LogBody bool   `yaml:"logBody"`
+	Env string `yaml:"env"`
+}
+
+type LoggerConfig struct {
+	LogBody bool `yaml:"logBody"`
 }
 
 func MustLoad() Config {
-	configPath := flag.String("config", "internal/config/config.yaml", "path to config.yaml file")
-	flag.Parse()
+	configPath := os.Getenv("CONFIG_FILE")
+	if len(configPath) == 0 {
+		panic("empty config path")
+	}
 
-	_, err := os.Stat(*configPath)
+	_, err := os.Stat(configPath)
 	if os.IsNotExist(err) {
-		log.Fatalf("config file does not exist: %s", *configPath)
+		panic(err)
 	}
 
 	cfg := &Config{}
 
-	err = cleanenv.ReadConfig(*configPath, cfg)
+	err = cleanenv.ReadConfig(configPath, cfg)
 	if err != nil {
-		log.Fatalf("failed to load config file: %s", err)
+		panic(err)
 	}
 
 	return *cfg
