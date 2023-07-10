@@ -1,21 +1,20 @@
 package main
 
 import (
-	lg "log"
-
 	"github.com/gettmure/go-click/internal/clicker"
 	"github.com/gettmure/go-click/internal/config"
 	"github.com/gettmure/go-click/internal/logger"
+	"github.com/gettmure/go-click/internal/usecase"
 	"golang.org/x/exp/slog"
 )
 
 func main() {
-	const op = "cmd.click.main"
+	const op = "cmd.clicker.main"
 	cfg := config.MustLoad()
 
 	log, err := logger.New(cfg.RuntimeConfig.Env)
 	if err != nil {
-		lg.Fatalf("failed to init logger: %s", err)
+		panic(err)
 	}
 	log = log.With("operation", op)
 	log.Debug("debug messages are enabled")
@@ -26,27 +25,14 @@ func main() {
 		slog.String("site_url", cfg.SiteConfig.Url),
 	)
 
-	clicker := clicker.New()
-	body, err := clicker.Click(cfg.SiteConfig.Url)
+	clicker, err := clicker.New()
 	if err != nil {
-		log.Info(
-			"click error",
-			slog.String("status", "error"),
-			slog.String("description", err.Error()),
-		)
+		panic(err)
 	}
 
-	if cfg.RuntimeConfig.LogBody {
-		bodyString := string(body[:])
-		log.Info(
-			"click success",
-			slog.String("status", "ok"),
-			slog.String("body", bodyString),
-		)
-	} else {
-		log.Info(
-			"click success",
-			slog.String("status", "ok"),
-		)
-	}
+	clickerUsecase := usecase.NewClickerUsecase(clicker, log, cfg.SiteConfig)
+	loggerUsecase := usecase.NewLoggerUsecase(log, cfg.LoggerConfig)
+
+	body := clickerUsecase.FetchBody()
+	loggerUsecase.LogBody(body)
 }

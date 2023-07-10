@@ -1,0 +1,23 @@
+services:
+  torproxy:
+    image: dperson/torproxy
+    ports:
+      - 9050:9050
+    networks:
+        - tor
+  clicker:
+    environment:
+      - HTTP_PROXY=socks5://torproxy:9050
+      - HTTPS_PROXY=socks5://torproxy:9050
+    depends_on:
+      torproxy:
+        condition: service_healthy
+    networks:
+      - tor
+    build: 
+      context: .
+      dockerfile: ./docker/clicker/Dockerfile
+
+networks:
+  tor:
+    driver: bridge
