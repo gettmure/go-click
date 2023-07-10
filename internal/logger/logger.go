@@ -14,7 +14,9 @@ const (
 	filePath = "./internal/logs/log.prod"
 )
 
-func New(env string) (*slog.Logger, error) {
+type Logger = *slog.Logger
+
+func New(env string) (Logger, error) {
 	switch env {
 	case envDev:
 		return loadDev()

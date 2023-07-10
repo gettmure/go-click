@@ -14,10 +14,12 @@ type clicker struct {
 	client http.Client
 }
 
-func New() Clicker {
-	c := http.Client{}
+func New() (Clicker, error) {
+	c := http.Client{
+		Transport: &http.Transport{Proxy: http.ProxyFromEnvironment},
+	}
 
-	return &clicker{client: c}
+	return &clicker{client: c}, nil
 }
 
 func (c *clicker) Click(url string) ([]byte, error) {
