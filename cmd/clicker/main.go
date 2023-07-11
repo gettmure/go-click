@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/gettmure/go-click/internal/clicker"
 	"github.com/gettmure/go-click/internal/config"
 	"github.com/gettmure/go-click/internal/logger"
 	"github.com/gettmure/go-click/internal/usecase"
+	"github.com/gettmure/go-click/pkg/clicker"
 	"golang.org/x/exp/slog"
 )
 
@@ -33,6 +33,6 @@ func main() {
 	clickerUsecase := usecase.NewClickerUsecase(clicker, log, cfg.SiteConfig)
 	loggerUsecase := usecase.NewLoggerUsecase(log, cfg.LoggerConfig)
 
-	body := clickerUsecase.FetchBody()
+	body := clickerUsecase.Click()
 	loggerUsecase.LogBody(body)
 }

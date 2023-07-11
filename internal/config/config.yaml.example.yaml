@@ -1,6 +1,11 @@
 runtime:
   env: 'dev' # dev | prod
 logger:
-  logBody: false
+  logBody: false # if true, response body will be logged after click
 site:
-  url: 'https://google.com'
+  url: 'https://wtfismyip.com/json' # URL to be clicked on
+  extraLinks:
+    enabled: false # if true, URLs from 'links' key will be used
+    random: false # if true, one random value from 'links' key will be used 
+    links: # extra links to be clicked on after main click
+      - 'https://wtfismyip.com/json'

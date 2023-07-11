@@ -13,7 +13,12 @@ type Config struct {
 }
 
 type SiteConfig struct {
-	Url string `yaml:"url"`
+	Url        string `yaml:"url"`
+	ExtraLinks struct {
+		Enabled bool     `yaml:"enabled"`
+		Random  bool     `yaml:"bool"`
+		Links   []string `yaml:"links"`
+	} `yaml:"extraLinks"`
 }
 
 type RuntimeConfig struct {

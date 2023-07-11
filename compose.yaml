@@ -9,14 +9,14 @@ services:
     environment:
       - HTTP_PROXY=socks5://torproxy:9050
       - HTTPS_PROXY=socks5://torproxy:9050
+    build: 
+      context: .
+      dockerfile: ./docker/clicker/Dockerfile
     depends_on:
       torproxy:
         condition: service_healthy
     networks:
       - tor
-    build: 
-      context: .
-      dockerfile: ./docker/clicker/Dockerfile
 
 networks:
   tor:
